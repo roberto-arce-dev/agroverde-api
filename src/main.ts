@@ -1,6 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as multipart from '@fastify/multipart';
@@ -24,7 +28,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
+  const configService = app.get(ConfigService);
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
@@ -42,7 +46,10 @@ async function bootstrap() {
       },
       'JWT-auth',
     )
-    .addTag('Autenticación', 'Endpoints de login, registro y gestión de usuarios')
+    .addTag(
+      'Autenticación',
+      'Endpoints de login, registro y gestión de usuarios',
+    )
     .addTag('Upload', 'Endpoints para subida de imágenes')
     .build();
 
@@ -63,7 +70,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || configService.get<number>('PORT') || 3000;
   await app.listen(port, '0.0.0.0');
-  
+
   console.log('\n🚀 API: http://localhost:' + port + '/api');
   console.log('📚 Swagger: http://localhost:' + port + '/api/docs\n');
 }
