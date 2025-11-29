@@ -505,6 +505,127 @@
           }
         }
       ]
+    },
+    {
+      "name": "Producto Agrícola",
+      "item": [
+        {
+          "name": "Productos Agrícolas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto/agricolas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto",
+                "agricolas"
+              ]
+            },
+            "description": "Catálogo de productos agrícolas"
+          },
+          "response": []
+        },
+        {
+          "name": "Productos por Productor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto/productor/{{productorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto",
+                "productor",
+                "{{productorId}}"
+              ]
+            },
+            "description": "Productos de un productor específico"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints específicos de Producto Agrícola"
+    },
+    {
+      "name": "Pedido",
+      "item": [
+        {
+          "name": "Mis Pedidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedido/cliente/{{clienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedido",
+                "cliente",
+                "{{clienteId}}"
+              ]
+            },
+            "description": "Historial de pedidos agrícolas"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints específicos de Pedido"
+    },
+    {
+      "name": "Ruta de Entrega",
+      "item": [
+        {
+          "name": "Ruta de Entrega",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta/pedido/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta",
+                "pedido",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": "Ruta asignada al pedido"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints específicos de Ruta de Entrega"
     }
   ],
   "variable": [

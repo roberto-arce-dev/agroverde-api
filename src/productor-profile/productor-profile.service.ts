@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { ProductorProfile, ProductorProfileDocument } from './schemas/productor-profile.schema';
 import { CreateProductorProfileDto } from './dto/create-productor-profile.dto';
 import { UpdateProductorProfileDto } from './dto/update-productor-profile.dto';
@@ -13,14 +13,14 @@ export class ProductorProfileService {
 
   async create(userId: string, dto: CreateProductorProfileDto): Promise<ProductorProfile> {
     const profile = await this.productorprofileModel.create({
-      user: userId,
+      user: new Types.ObjectId(userId),
       ...dto,
     });
     return profile;
   }
 
   async findByUserId(userId: string): Promise<ProductorProfile | null> {
-    return this.productorprofileModel.findOne({ user: userId }).populate('user', 'email role').exec();
+    return this.productorprofileModel.findOne({ user: new Types.ObjectId(userId) }).populate('user', 'email role').exec();
   }
 
   async findAll(): Promise<ProductorProfile[]> {
@@ -29,7 +29,7 @@ export class ProductorProfileService {
 
   async update(userId: string, dto: UpdateProductorProfileDto): Promise<ProductorProfile> {
     const profile = await this.productorprofileModel.findOneAndUpdate(
-      { user: userId },
+      { user: new Types.ObjectId(userId) },
       { $set: dto },
       { new: true },
     );
@@ -40,7 +40,7 @@ export class ProductorProfileService {
   }
 
   async delete(userId: string): Promise<void> {
-    const result = await this.productorprofileModel.deleteOne({ user: userId });
+    const result = await this.productorprofileModel.deleteOne({ user: new Types.ObjectId(userId) });
     if (result.deletedCount === 0) {
       throw new NotFoundException('Profile no encontrado');
     }
