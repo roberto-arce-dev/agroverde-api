@@ -10,6 +10,9 @@ import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { ClienteProfileModule } from './cliente-profile/cliente-profile.module';
 import { ProductorProfileModule } from './productor-profile/productor-profile.module';
+import { ProductoAgricolaModule } from './productoagricola/productoagricola.module';
+import { PedidoModule } from './pedido/pedido.module';
+import { RutaEntregaModule } from './rutaentrega/rutaentrega.module';
 
 @Module({
   imports: [
@@ -43,6 +46,9 @@ import { ProductorProfileModule } from './productor-profile/productor-profile.mo
     ClienteProfileModule,
     ProductorProfileModule,
     UploadModule,
+    ProductoAgricolaModule,
+    PedidoModule,
+    RutaEntregaModule,
   ],
   controllers: [AppController],
   providers: [

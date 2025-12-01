@@ -54,4 +54,12 @@ export class CreatePedidoDto {
   @IsOptional()
   @IsString()
   notasEntrega?: string;
+
+  @ApiPropertyOptional({
+    example: '507f1f77bcf86cd799439011',
+    description: 'ID de la Ruta de Entrega',
+  })
+  @IsOptional()
+  @IsString()
+  ruta?: string;
 }

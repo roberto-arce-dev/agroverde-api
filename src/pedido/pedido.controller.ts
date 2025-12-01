@@ -35,13 +35,22 @@ export class PedidoController {
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   @ApiResponse({ status: 401, description: 'No autorizado' })
   async create(@Body() createPedidoDto: CreatePedidoDto, @Req() req: any) {
-    const userId = req.user.userId;
+    const userId = req.user?.userId;
     const data = await this.pedidoService.create(createPedidoDto, userId);
     return {
       success: true,
       message: 'Pedido creado exitosamente',
       data,
     };
+  }
+
+  @Get('mis-pedidos')
+  @ApiOperation({ summary: 'Obtener pedidos del usuario autenticado' })
+  @ApiResponse({ status: 200, description: 'Lista de pedidos del usuario' })
+  async findMyPedidos(@Req() req: any) {
+    const userId = req.user.userId;
+    const data = await this.pedidoService.findMyPedidos(userId);
+    return { success: true, data, total: data.length };
   }
 
   @Post(':id/upload-image')

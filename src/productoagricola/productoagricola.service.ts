@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateProductoAgricolaDto } from './dto/create-productoagricola.dto';
 import { UpdateProductoAgricolaDto } from './dto/update-productoagricola.dto';
 import { ProductoAgricola, ProductoAgricolaDocument } from './schemas/productoagricola.schema';
@@ -37,6 +37,11 @@ export class ProductoAgricolaService {
       throw new NotFoundException(`ProductoAgricola con ID ${id} no encontrado`);
     }
     return productoagricola;
+  }
+
+  async findByProductor(productorId: string): Promise<ProductoAgricola[]> {
+    return this.productoagricolaModel.find({ productor: new Types.ObjectId(productorId) })
+      .populate('productor', 'nombre ubicacion telefono');
   }
 
   async remove(id: string | number): Promise<void> {
