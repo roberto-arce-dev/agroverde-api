@@ -23,6 +23,20 @@ export class ProductorProfileService {
     return this.productorprofileModel.findOne({ user: new Types.ObjectId(userId) }).populate('user', 'email role').exec();
   }
 
+  async findOrCreateByUserId(userId: string): Promise<ProductorProfile> {
+    let profile = await this.findByUserId(userId);
+    if (!profile) {
+      profile = await this.create(userId, {
+        nombreNegocio: 'Negocio Sin Nombre',
+        nombreContacto: '',
+        telefono: '',
+        direccion: '',
+        certificaciones: [],
+      });
+    }
+    return profile;
+  }
+
   async findAll(): Promise<ProductorProfile[]> {
     return this.productorprofileModel.find().populate('user', 'email role').exec();
   }

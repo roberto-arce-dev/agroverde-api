@@ -111,9 +111,30 @@ export class AuthService implements OnModuleInit {
 
     const userObject = user.toObject();
     const { password, ...userWithoutPassword } = userObject;
+    const userId = (user._id as any).toString();
+
+    // Obtener o crear profile según el rol
+    let profile: any = null;
+    if (user.role === Role.CLIENTE) {
+      profile = await this.clienteProfileService.findOrCreateByUserId(userId);
+    } else if (user.role === Role.PRODUCTOR) {
+      profile = await this.productorProfileService.findOrCreateByUserId(userId);
+    }
+
+    // Fusionar user + profile
+    const profileObject = profile ? profile.toObject() : {};
+    const { _id: profileId, user: userRef, createdAt: profileCreatedAt, updatedAt: profileUpdatedAt, __v, ...profileData } = profileObject;
+
+    const mergedUser = {
+      ...userWithoutPassword,
+      ...profileData,
+      profileId: profileId?.toString(),
+      profileCreatedAt,
+      profileUpdatedAt,
+    };
 
     return {
-      user: userWithoutPassword,
+      user: mergedUser,
       access_token: this.generateToken(userObject),
     };
   }
@@ -125,7 +146,26 @@ export class AuthService implements OnModuleInit {
     }
     const userObject = user.toObject();
     const { password, ...userWithoutPassword } = userObject;
-    return userWithoutPassword;
+
+    // Obtener o crear profile según el rol
+    let profile: any = null;
+    if (user.role === Role.CLIENTE) {
+      profile = await this.clienteProfileService.findOrCreateByUserId(userId);
+    } else if (user.role === Role.PRODUCTOR) {
+      profile = await this.productorProfileService.findOrCreateByUserId(userId);
+    }
+
+    // Fusionar user + profile
+    const profileObject = profile ? profile.toObject() : {};
+    const { _id: profileId, user: userRef, createdAt: profileCreatedAt, updatedAt: profileUpdatedAt, __v, ...profileData } = profileObject;
+
+    return {
+      ...userWithoutPassword,
+      ...profileData,
+      profileId: profileId?.toString(),
+      profileCreatedAt,
+      profileUpdatedAt,
+    };
   }
 
   private generateToken(user: any): string {
