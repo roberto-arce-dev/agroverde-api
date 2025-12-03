@@ -527,9 +527,9 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Papa andina\",\n  \"descripcion\": \"Papa organica seleccionada\",\n  \"imagen\": \"https://example.com/producto.jpg\",\n  \"imagenThumbnail\": \"https://example.com/producto-thumb.jpg\"\n}"
+              "raw": "{\n  \"nombre\": \"Papa andina\",\n  \"productor\": \"{{productorId}}\",\n  \"precioKg\": 4.5,\n  \"categoria\": \"verduras\",\n  \"stockKg\": 100,\n  \"organico\": true,\n  \"descripcion\": \"Papa organica seleccionada\",\n  \"imagen\": \"https://example.com/producto.jpg\",\n  \"imagenThumbnail\": \"https://example.com/producto-thumb.jpg\"\n}"
             },
-            "description": "Crear producto agricola"
+            "description": "Crear producto agricola (requiere productor y precio)"
           }
         },
         {
@@ -666,7 +666,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"descripcion\": \"Disponible solo en temporada\",\n  \"imagen\": \"https://example.com/producto-actualizado.jpg\"\n}"
+              "raw": "{\n  \"descripcion\": \"Disponible solo en temporada\",\n  \"precioKg\": 5.2,\n  \"stockKg\": 80,\n  \"organico\": false,\n  \"imagen\": \"https://example.com/producto-actualizado.jpg\"\n}"
             },
             "description": "Actualizar producto"
           }
