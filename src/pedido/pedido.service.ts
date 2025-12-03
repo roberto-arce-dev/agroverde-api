@@ -33,7 +33,7 @@ export class PedidoService {
         return {
           producto: new Types.ObjectId(item.producto),
           cantidad: item.cantidad,
-          precio: producto.precio,
+          precio: producto.precioKg,
         };
       })
     );
@@ -62,7 +62,7 @@ export class PedidoService {
   async findOne(id: string | number): Promise<Pedido> {
     const pedido = await this.pedidoModel.findById(id)
       .populate('cliente', 'nombre email telefono')
-      .populate('items.producto', 'nombre descripcion precio')
+      .populate('items.producto', 'nombre descripcion precioKg')
       .populate('ruta', 'nombre zonas horarios');
     if (!pedido) {
       throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
@@ -74,7 +74,7 @@ export class PedidoService {
     const clienteProfile = await this.clienteProfileService.findByUserId(userId);
     const clienteId = (clienteProfile as any)._id.toString();
     return this.pedidoModel.find({ cliente: new Types.ObjectId(clienteId) })
-      .populate('items.producto', 'nombre descripcion precio')
+      .populate('items.producto', 'nombre descripcion precioKg')
       .populate('ruta', 'nombre zonas horarios')
       .sort({ createdAt: -1 });
   }
