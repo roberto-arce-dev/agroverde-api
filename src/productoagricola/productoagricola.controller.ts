@@ -103,11 +103,11 @@ export class ProductoAgricolaController {
   }
 
   @Get('productor/:productorId')
-  @ApiOperation({ summary: 'Listar productos por productor' })
-  @ApiParam({ name: 'productorId', description: 'ID del productor' })
+  @ApiOperation({ summary: 'Listar productos por productor (ProductorProfileId o userId)' })
+  @ApiParam({ name: 'productorId', description: 'ID de ProductorProfile o userId del productor' })
   @ApiResponse({ status: 200, description: 'Lista de productos del productor' })
   async findByProductor(@Param('productorId') productorId: string) {
-    const data = await this.productoagricolaService.findByProductor(productorId);
+    const data = await this.productoagricolaService.findByProductorIdentifier(productorId);
     return { success: true, data, total: data.length };
   }
 

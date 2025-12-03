@@ -602,17 +602,17 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/producto-agricola/productor/{{productorId}}",
+              "raw": "{{baseUrl}}/producto-agricola/productor/{{productorOrUserId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "producto-agricola",
                 "productor",
-                "{{productorId}}"
+                "{{productorOrUserId}}"
               ]
             },
-            "description": "Productos asociados a un productor"
+            "description": "Productos asociados a un productor. Env\u00eda el ProductorProfileId o el userId del productor."
           }
         },
         {
@@ -1351,6 +1351,11 @@
     },
     {
       "key": "productorId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productorOrUserId",
       "value": "",
       "type": "string"
     },

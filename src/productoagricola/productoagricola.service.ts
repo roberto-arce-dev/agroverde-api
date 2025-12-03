@@ -4,11 +4,13 @@ import { Model, Types } from 'mongoose';
 import { CreateProductoAgricolaDto } from './dto/create-productoagricola.dto';
 import { UpdateProductoAgricolaDto } from './dto/update-productoagricola.dto';
 import { ProductoAgricola, ProductoAgricolaDocument } from './schemas/productoagricola.schema';
+import { ProductorProfileService } from '../productor-profile/productor-profile.service';
 
 @Injectable()
 export class ProductoAgricolaService {
   constructor(
     @InjectModel(ProductoAgricola.name) private productoagricolaModel: Model<ProductoAgricolaDocument>,
+    private readonly productorProfileService: ProductorProfileService,
   ) {}
 
   async create(createProductoAgricolaDto: CreateProductoAgricolaDto): Promise<ProductoAgricola> {
@@ -42,6 +44,28 @@ export class ProductoAgricolaService {
   async findByProductor(productorId: string): Promise<ProductoAgricola[]> {
     return this.productoagricolaModel.find({ productor: new Types.ObjectId(productorId) })
       .populate('productor', 'nombre ubicacion telefono');
+  }
+
+  async findByProductorIdentifier(identifier: string): Promise<ProductoAgricola[]> {
+    // 1) Intentar como ID de Productor/Profile
+    if (Types.ObjectId.isValid(identifier)) {
+      const productos = await this.findByProductor(identifier);
+      if (productos.length) {
+        return productos;
+      }
+    }
+
+    // 2) Intentar resolver como userId -> obtener ProductorProfile
+    const profile = Types.ObjectId.isValid(identifier)
+      ? await this.productorProfileService.findByUserId(identifier)
+      : null;
+    if (profile) {
+      const profileId = (profile as any)._id.toString();
+      return this.findByProductor(profileId);
+    }
+
+    // Si no hay match, devolver lista vacía para mantener compatibilidad
+    return [];
   }
 
   async remove(id: string | number): Promise<void> {
