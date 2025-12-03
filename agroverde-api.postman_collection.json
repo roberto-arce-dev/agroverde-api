@@ -1,12 +1,13 @@
 {
   "info": {
     "name": "AgroVerde API",
-    "description": "Colección completa de Postman para AgroVerde API con Auth y Profiles",
+    "description": "Coleccion Postman alineada con los controladores actuales",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
       "name": "Auth",
+      "description": "Autenticacion y manejo de usuarios",
       "item": [
         {
           "name": "Register",
@@ -18,10 +19,6 @@
                 "value": "application/json"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"CLIENTE\",\n  \"nombre\": \"Juan P\\u00e9rez\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
               "host": [
@@ -32,9 +29,12 @@
                 "register"
               ]
             },
-            "description": "Registrar nuevo usuario. Roles disponibles: CLIENTE, PRODUCTOR"
-          },
-          "response": []
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"CLIENTE\",\n  \"nombre\": \"Juan Perez\",\n  \"telefono\": \"+51 987654321\",\n  \"direccion\": \"Av. Principal 123\",\n  \"preferencias\": [\n    \"organico\",\n    \"delivery\"\n  ],\n  \"nombreNegocio\": \"Finca Verde\",\n  \"nombreContacto\": \"Juan Perez\",\n  \"certificaciones\": [\n    \"certificacion-1\"\n  ]\n}"
+            },
+            "description": "Registrar usuario (CLIENTE o PRODUCTOR)"
+          }
         },
         {
           "name": "Login",
@@ -46,10 +46,6 @@
                 "value": "application/json"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\"\n}"
-            },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
               "host": [
@@ -60,9 +56,12 @@
                 "login"
               ]
             },
-            "description": "Iniciar sesión y obtener token JWT"
-          },
-          "response": []
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "description": "Iniciar sesion y obtener token JWT"
+          }
         },
         {
           "name": "Get My Profile",
@@ -85,9 +84,8 @@
                 "profile"
               ]
             },
-            "description": "Obtener información del usuario autenticado (requiere token)"
-          },
-          "response": []
+            "description": "Perfil del usuario autenticado"
+          }
         },
         {
           "name": "Get All Users (Admin)",
@@ -110,57 +108,20 @@
                 "users"
               ]
             },
-            "description": "Listar todos los usuarios del sistema (solo ADMIN)"
-          },
-          "response": []
+            "description": "Listado de usuarios (requiere rol ADMIN)"
+          }
         }
-      ],
-      "description": "Endpoints de autenticación (registro, login, perfil de usuario)"
+      ]
     },
     {
-      "name": "Upload Image",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": [
-            {
-              "key": "file",
-              "type": "file",
-              "src": [],
-              "description": "Imagen a subir (JPG, PNG, etc.) - Máximo 5MB"
-            }
-          ]
-        },
-        "url": {
-          "raw": "{{baseUrl}}/upload/image",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "upload",
-            "image"
-          ]
-        },
-        "description": "Sube una imagen al servidor y genera un thumbnail automáticamente"
-      },
-      "response": [
+      "name": "Upload",
+      "description": "Subida generica de imagenes",
+      "item": [
         {
-          "name": "Upload exitoso",
-          "originalRequest": {
+          "name": "Upload Image",
+          "request": {
             "method": "POST",
             "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file",
-                  "src": []
-                }
-              ]
-            },
             "url": {
               "raw": "{{baseUrl}}/upload/image",
               "host": [
@@ -170,26 +131,59 @@
                 "upload",
                 "image"
               ]
-            }
-          },
-          "status": "Created",
-          "code": 201,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": "{\n  \"message\": \"Imagen subida exitosamente\",\n  \"imagen\": \"uploads/1700000000000-imagen.jpg\",\n  \"imagenThumbnail\": \"uploads/thumbnails/thumb-1700000000000-imagen.jpg\"\n}"
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "description": "Sube imagen, genera thumbnail y devuelve URLs"
+          }
         }
       ]
     },
     {
-      "name": "Upload por Entidad",
+      "name": "Cliente",
+      "description": "CRUD de clientes",
       "item": [
         {
-          "name": "Upload ProductoAgricola Image",
+          "name": "Crear Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente Demo\",\n  \"descripcion\": \"Cliente mayorista\",\n  \"imagen\": \"https://example.com/imagen.jpg\",\n  \"imagenThumbnail\": \"https://example.com/thumb.jpg\"\n}"
+            },
+            "description": "Crear un cliente"
+          }
+        },
+        {
+          "name": "Upload Cliente Image",
           "request": {
             "method": "POST",
             "header": [
@@ -199,318 +193,32 @@
                 "type": "text"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/{{clienteId}}/upload-image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "{{clienteId}}",
+                "upload-image"
+              ]
+            },
             "body": {
               "mode": "formdata",
               "formdata": [
                 {
                   "key": "file",
                   "type": "file",
-                  "src": [],
-                  "description": "Imagen para ProductoAgricola (JPG, PNG, etc.) - Máximo 5MB"
+                  "src": ""
                 }
               ]
             },
-            "url": {
-              "raw": "{{baseUrl}}/productoagricola/{{id}}/upload-image",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "productoagricola",
-                "{{id}}",
-                "upload-image"
-              ]
-            },
-            "description": "Sube una imagen y la asocia al ProductoAgricola especificado. Requiere autenticación."
-          },
-          "response": [
-            {
-              "name": "Upload exitoso",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}",
-                    "type": "text"
-                  }
-                ],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "file",
-                      "type": "file",
-                      "src": []
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/productoagricola/507f1f77bcf86cd799439011/upload-image",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "productoagricola",
-                    "507f1f77bcf86cd799439011",
-                    "upload-image"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Imagen subida y asociada exitosamente\",\n  \"data\": {\n    \"productoagricola\": {\n      \"_id\": \"507f1f77bcf86cd799439011\",\n      \"imagen\": \"uploads/1700000000000-imagen.jpg\",\n      \"imagenThumbnail\": \"uploads/thumbnails/thumb-1700000000000-imagen.jpg\"\n    },\n    \"upload\": {\n      \"url\": \"uploads/1700000000000-imagen.jpg\",\n      \"thumbnailUrl\": \"uploads/thumbnails/thumb-1700000000000-imagen.jpg\"\n    }\n  }\n}"
-            }
-          ]
-        }
-      ],
-      "description": "Endpoints para subir y asociar imágenes a entidades específicas: ProductoAgricola"
-    },
-    {
-      "name": "Servir Imágenes",
-      "item": [
-        {
-          "name": "Get Image",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:3010/uploads/{{filename}}",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3010",
-              "path": [
-                "uploads",
-                "{{filename}}"
-              ]
-            },
-            "description": "Obtiene una imagen subida previamente"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Thumbnail",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:3010/uploads/thumbnails/{{filename}}",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "3010",
-              "path": [
-                "uploads",
-                "thumbnails",
-                "{{filename}}"
-              ]
-            },
-            "description": "Obtiene un thumbnail generado automáticamente"
-          },
-          "response": []
-        }
-      ],
-      "description": "Endpoints para servir imágenes y thumbnails"
-    },
-    {
-      "name": "ClienteProfile (Profiles)",
-      "item": [
-        {
-          "name": "Get My Profile",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/cliente-profile/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "cliente-profile",
-                "me"
-              ]
-            },
-            "description": "Obtener mi ClienteProfile (requiere rol CLIENTE)"
+            "description": "Subir imagen para cliente"
           }
         },
         {
-          "name": "Update My Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Valor de nombre\",\n  \"telefono\": \"+51 900000000\",\n  \"direccion\": \"Valor de direccion\",\n  \"ubicacion\": \"Valor de ubicacion\",\n  \"preferencias\": [\n    \"valor1\",\n    \"valor2\"\n  ]\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/cliente-profile/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "cliente-profile",
-                "me"
-              ]
-            },
-            "description": "Actualizar mi ClienteProfile (requiere rol CLIENTE)"
-          }
-        },
-        {
-          "name": "List All Profiles (Admin)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/cliente-profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "cliente-profile"
-              ]
-            },
-            "description": "Listar todos los ClienteProfile (requiere rol ADMIN)"
-          }
-        },
-        {
-          "name": "Get Profile by UserId (Admin)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/cliente-profile/:userId",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "cliente-profile",
-                ":userId"
-              ],
-              "variable": [
-                {
-                  "key": "userId",
-                  "value": "",
-                  "description": "ID del usuario"
-                }
-              ]
-            },
-            "description": "Obtener ClienteProfile por userId (requiere rol ADMIN)"
-          }
-        }
-      ]
-    },
-    {
-      "name": "ProductorProfile (Profiles)",
-      "item": [
-        {
-          "name": "Get My Profile",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/productor-profile/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "productor-profile",
-                "me"
-              ]
-            },
-            "description": "Obtener mi ProductorProfile (requiere rol PRODUCTOR)"
-          }
-        },
-        {
-          "name": "Update My Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombreNegocio\": \"Valor de nombreNegocio\",\n  \"nombreContacto\": \"Valor de nombreContacto\",\n  \"telefono\": \"+51 900000000\",\n  \"direccion\": \"Valor de direccion\",\n  \"ubicacion\": \"Valor de ubicacion\",\n  \"certificaciones\": [\n    \"valor1\",\n    \"valor2\"\n  ],\n  \"isVerified\": true\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/productor-profile/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "productor-profile",
-                "me"
-              ]
-            },
-            "description": "Actualizar mi ProductorProfile (requiere rol PRODUCTOR)"
-          }
-        },
-        {
-          "name": "List All Profiles (Admin)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/productor-profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "productor-profile"
-              ]
-            },
-            "description": "Listar todos los ProductorProfile (requiere rol ADMIN)"
-          }
-        },
-        {
-          "name": "Get Profile by UserId (Admin)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/productor-profile/:userId",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "productor-profile",
-                ":userId"
-              ],
-              "variable": [
-                {
-                  "key": "userId",
-                  "value": "",
-                  "description": "ID del usuario"
-                }
-              ]
-            },
-            "description": "Obtener ProductorProfile por userId (requiere rol ADMIN)"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Producto Agrícola",
-      "item": [
-        {
-          "name": "Productos Agrícolas",
+          "name": "Listar Clientes",
           "request": {
             "method": "GET",
             "header": [
@@ -521,18 +229,366 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/producto/agricolas",
+              "raw": "{{baseUrl}}/cliente",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "producto",
-                "agricolas"
+                "cliente"
               ]
             },
-            "description": "Catálogo de productos agrícolas"
-          },
-          "response": []
+            "description": "Listado paginado de clientes"
+          }
+        },
+        {
+          "name": "Obtener Cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/{{clienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "{{clienteId}}"
+              ]
+            },
+            "description": "Detalle por id"
+          }
+        },
+        {
+          "name": "Actualizar Cliente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/{{clienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "{{clienteId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Cliente actualizado\",\n  \"imagen\": \"https://example.com/imagen-nueva.jpg\"\n}"
+            },
+            "description": "Actualizar datos del cliente"
+          }
+        },
+        {
+          "name": "Eliminar Cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/{{clienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "{{clienteId}}"
+              ]
+            },
+            "description": "Eliminar cliente"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productor",
+      "description": "CRUD de productores",
+      "item": [
+        {
+          "name": "Crear Productor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Productor Demo\",\n  \"descripcion\": \"Productor local\",\n  \"imagen\": \"https://example.com/productor.jpg\",\n  \"imagenThumbnail\": \"https://example.com/productor-thumb.jpg\"\n}"
+            },
+            "description": "Crear productor"
+          }
+        },
+        {
+          "name": "Upload Productor Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor/{{productorId}}/upload-image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor",
+                "{{productorId}}",
+                "upload-image"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "description": "Subir imagen para productor"
+          }
+        },
+        {
+          "name": "Listar Productores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor"
+              ]
+            },
+            "description": "Listado de productores"
+          }
+        },
+        {
+          "name": "Obtener Productor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor/{{productorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor",
+                "{{productorId}}"
+              ]
+            },
+            "description": "Detalle por id"
+          }
+        },
+        {
+          "name": "Actualizar Productor",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor/{{productorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor",
+                "{{productorId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Productor actualizado\",\n  \"imagen\": \"https://example.com/productor-nueva.jpg\"\n}"
+            },
+            "description": "Actualizar datos del productor"
+          }
+        },
+        {
+          "name": "Eliminar Productor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor/{{productorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor",
+                "{{productorId}}"
+              ]
+            },
+            "description": "Eliminar productor"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Producto Agricola",
+      "description": "CRUD de productos agr\u00edcolas",
+      "item": [
+        {
+          "name": "Crear Producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto-agricola",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto-agricola"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Papa andina\",\n  \"descripcion\": \"Papa organica seleccionada\",\n  \"imagen\": \"https://example.com/producto.jpg\",\n  \"imagenThumbnail\": \"https://example.com/producto-thumb.jpg\"\n}"
+            },
+            "description": "Crear producto agricola"
+          }
+        },
+        {
+          "name": "Upload Producto Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto-agricola/{{productoAgricolaId}}/upload-image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto-agricola",
+                "{{productoAgricolaId}}",
+                "upload-image"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "description": "Subir imagen del producto"
+          }
+        },
+        {
+          "name": "Listar Productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto-agricola",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto-agricola"
+              ]
+            },
+            "description": "Catalogo de productos"
+          }
         },
         {
           "name": "Productos por Productor",
@@ -546,26 +602,136 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/producto/productor/{{productorId}}",
+              "raw": "{{baseUrl}}/producto-agricola/productor/{{productorId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "producto",
+                "producto-agricola",
                 "productor",
                 "{{productorId}}"
               ]
             },
-            "description": "Productos de un productor específico"
-          },
-          "response": []
+            "description": "Productos asociados a un productor"
+          }
+        },
+        {
+          "name": "Obtener Producto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto-agricola/{{productoAgricolaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto-agricola",
+                "{{productoAgricolaId}}"
+              ]
+            },
+            "description": "Detalle por id"
+          }
+        },
+        {
+          "name": "Actualizar Producto",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto-agricola/{{productoAgricolaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto-agricola",
+                "{{productoAgricolaId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Disponible solo en temporada\",\n  \"imagen\": \"https://example.com/producto-actualizado.jpg\"\n}"
+            },
+            "description": "Actualizar producto"
+          }
+        },
+        {
+          "name": "Eliminar Producto",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/producto-agricola/{{productoAgricolaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "producto-agricola",
+                "{{productoAgricolaId}}"
+              ]
+            },
+            "description": "Eliminar producto"
+          }
         }
-      ],
-      "description": "Endpoints específicos de Producto Agrícola"
+      ]
     },
     {
       "name": "Pedido",
+      "description": "Pedidos y seguimiento",
       "item": [
+        {
+          "name": "Crear Pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedido",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedido"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente\": \"64b0c5af12ab340001234567\",\n  \"items\": [\n    {\n      \"producto\": \"64b0c5af12ab340009999999\",\n      \"cantidad\": 2\n    },\n    {\n      \"producto\": \"64b0c5af12ab340008888888\",\n      \"cantidad\": 1\n    }\n  ],\n  \"direccionEntrega\": \"Calle 123, Lima\",\n  \"notasEntrega\": \"Dejar en porteria\",\n  \"ruta\": \"64b0c5af12ab340007777777\"\n}"
+            },
+            "description": "Crear pedido; el cliente se resuelve por token si no se envia"
+          }
+        },
         {
           "name": "Mis Pedidos",
           "request": {
@@ -578,28 +744,55 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/pedido/cliente/{{clienteId}}",
+              "raw": "{{baseUrl}}/pedido/mis-pedidos",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "pedido",
-                "cliente",
-                "{{clienteId}}"
+                "mis-pedidos"
               ]
             },
-            "description": "Historial de pedidos agrícolas"
-          },
-          "response": []
-        }
-      ],
-      "description": "Endpoints específicos de Pedido"
-    },
-    {
-      "name": "Ruta de Entrega",
-      "item": [
+            "description": "Pedidos del usuario autenticado"
+          }
+        },
         {
-          "name": "Ruta de Entrega",
+          "name": "Upload Pedido Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedido/{{pedidoId}}/upload-image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedido",
+                "{{pedidoId}}",
+                "upload-image"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "description": "Subir comprobante/imagen para pedido"
+          }
+        },
+        {
+          "name": "Listar Pedidos",
           "request": {
             "method": "GET",
             "header": [
@@ -610,22 +803,534 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/ruta/pedido/{{pedidoId}}",
+              "raw": "{{baseUrl}}/pedido",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "ruta",
+                "pedido"
+              ]
+            },
+            "description": "Listado general de pedidos"
+          }
+        },
+        {
+          "name": "Obtener Pedido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedido/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
                 "pedido",
                 "{{pedidoId}}"
               ]
             },
-            "description": "Ruta asignada al pedido"
-          },
-          "response": []
+            "description": "Detalle por id"
+          }
+        },
+        {
+          "name": "Actualizar Pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedido/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedido",
+                "{{pedidoId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"confirmado\",\n  \"notasEntrega\": \"Entregar antes del mediodia\"\n}"
+            },
+            "description": "Actualizar estado o datos del pedido"
+          }
+        },
+        {
+          "name": "Eliminar Pedido",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedido/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedido",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": "Eliminar pedido"
+          }
         }
-      ],
-      "description": "Endpoints específicos de Ruta de Entrega"
+      ]
+    },
+    {
+      "name": "Ruta de Entrega",
+      "description": "Rutas y asignaciones de entrega",
+      "item": [
+        {
+          "name": "Crear Ruta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta-entrega",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta-entrega"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ruta Lima Centro\",\n  \"descripcion\": \"Cobertura para distritos centrales\",\n  \"imagen\": \"https://example.com/ruta.jpg\",\n  \"imagenThumbnail\": \"https://example.com/ruta-thumb.jpg\"\n}"
+            },
+            "description": "Crear ruta de entrega"
+          }
+        },
+        {
+          "name": "Upload Ruta Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta-entrega/{{rutaEntregaId}}/upload-image",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta-entrega",
+                "{{rutaEntregaId}}",
+                "upload-image"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "description": "Subir imagen asociada a la ruta"
+          }
+        },
+        {
+          "name": "Listar Rutas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta-entrega",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta-entrega"
+              ]
+            },
+            "description": "Listado de rutas"
+          }
+        },
+        {
+          "name": "Obtener Ruta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta-entrega/{{rutaEntregaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta-entrega",
+                "{{rutaEntregaId}}"
+              ]
+            },
+            "description": "Detalle por id"
+          }
+        },
+        {
+          "name": "Actualizar Ruta",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta-entrega/{{rutaEntregaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta-entrega",
+                "{{rutaEntregaId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Incluye nuevos puntos de entrega\",\n  \"imagen\": \"https://example.com/ruta-actualizada.jpg\"\n}"
+            },
+            "description": "Actualizar datos de la ruta"
+          }
+        },
+        {
+          "name": "Eliminar Ruta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ruta-entrega/{{rutaEntregaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ruta-entrega",
+                "{{rutaEntregaId}}"
+              ]
+            },
+            "description": "Eliminar ruta"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClienteProfile (Profiles)",
+      "description": "Perfil del cliente basado en el usuario",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente-profile/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente-profile",
+                "me"
+              ]
+            },
+            "description": "Obtener mi perfil (CLIENTE)"
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente-profile/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente-profile",
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Perez\",\n  \"telefono\": \"+51 900000000\",\n  \"direccion\": \"Av. Siempre Viva 742\",\n  \"preferencias\": [\n    \"delivery\",\n    \"organico\"\n  ]\n}"
+            },
+            "description": "Actualizar mi perfil"
+          }
+        },
+        {
+          "name": "List All Profiles (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente-profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente-profile"
+              ]
+            },
+            "description": "Listar perfiles (ADMIN)"
+          }
+        },
+        {
+          "name": "Get Profile by UserId (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente-profile/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente-profile",
+                "{{userId}}"
+              ]
+            },
+            "description": "Obtener perfil por userId (ADMIN)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProductorProfile (Profiles)",
+      "description": "Perfil del productor basado en el usuario",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor-profile/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor-profile",
+                "me"
+              ]
+            },
+            "description": "Obtener mi perfil (PRODUCTOR)"
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor-profile/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor-profile",
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreNegocio\": \"Agro Verde SAC\",\n  \"nombreContacto\": \"Maria Flores\",\n  \"telefono\": \"+51 988888888\",\n  \"direccion\": \"Carretera Central km 12\",\n  \"certificaciones\": [\n    \"bpm\",\n    \"organico\"\n  ]\n}"
+            },
+            "description": "Actualizar mi perfil"
+          }
+        },
+        {
+          "name": "List All Profiles (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor-profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor-profile"
+              ]
+            },
+            "description": "Listar perfiles (ADMIN)"
+          }
+        },
+        {
+          "name": "Get Profile by UserId (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/productor-profile/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productor-profile",
+                "{{userId}}"
+              ]
+            },
+            "description": "Obtener perfil por userId (ADMIN)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Servir Imagenes",
+      "description": "Recursos estaticos expuestos por /uploads",
+      "item": [
+        {
+          "name": "Get Image",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploads/{{filename}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploads",
+                "{{filename}}"
+              ]
+            },
+            "description": "Imagen original (tambien disponible en /uploads sin prefijo /api)"
+          }
+        },
+        {
+          "name": "Get Thumbnail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploads/thumbnails/{{filename}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploads",
+                "thumbnails",
+                "{{filename}}"
+              ]
+            },
+            "description": "Thumbnail generado"
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -640,12 +1345,7 @@
       "type": "string"
     },
     {
-      "key": "id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "filename",
+      "key": "clienteId",
       "value": "",
       "type": "string"
     },
@@ -655,12 +1355,27 @@
       "type": "string"
     },
     {
-      "key": "clienteId",
+      "key": "productoAgricolaId",
       "value": "",
       "type": "string"
     },
     {
       "key": "pedidoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rutaEntregaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "filename",
       "value": "",
       "type": "string"
     }
